@@ -4,6 +4,8 @@ canvas.height = canvas.offsetHeight;
 canvas.width = canvas.offsetWidth;
 // score
 let score = 0;
+// nombre de vie
+let lives = 3;
 //les brique a optimiser selon la dimmension du canvas
 let brickRowCount = 3;
 let brickCollumCount = 5;
@@ -79,17 +81,24 @@ function collisionDetection() {
           if (score === brickCollumCount * brickRowCount) {
             alert("Bravo tes un dieu !!!!! :D");
             document.location.reload();
-            clearInterval(interval);
+            // clearInterval(interval);
           }
         }
       }
     }
   }
 }
+// fonction scrore
 function drawScore() {
   ctx.font = "16px Arial";
   ctx.fillStyle = "#0095DD";
   ctx.fillText("Score: " + score, 8, 20);
+}
+// fonction vie
+function drawLive() {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("vie: " + lives, canvas.width - 65, 20);
 }
 //fonction pour dessiner la ball
 function drawBall() {
@@ -134,6 +143,7 @@ function draw() {
     collisionDetection();
     drawBrick();
     drawScore();
+    drawLive();
     //rebond haut et bas
     if (y + dy < ballRadius) {
       dy = -dy;
@@ -141,10 +151,20 @@ function draw() {
       if (x > paddleX && x < paddleX + paddleWidth) {
         dy = -dy;
       } else {
-        // a optimiser
-        alert("GAME OVER !!!");
-        document.location.reload();
-        clearInterval(interval); // chrome pose probleme
+        lives--;
+        // !lives et la meme chose que ===lives
+        if (!lives) {
+          // a optimiser
+          alert("GAME OVER !!!");
+          document.location.reload();
+          // clearInterval(interval); // chrome pose probleme
+        } else {
+          x = canvas.width / 2;
+          y = canvas.height - 30;
+          dx = 2;
+          dy = -2;
+          paddleX = (canvas.width - paddleWidth) / 2;
+        }
       }
     }
     if (x + dx < ballRadius || x + dx > canvas.width - ballRadius) {
@@ -164,6 +184,8 @@ function draw() {
     x += dx; // x = x + dx;
     y += dy;
   }
+  requestAnimationFrame(draw); //60FPS
 }
 
-let interval = setInterval(draw, 10);
+// let interval = setInterval(draw, 10);
+draw();
